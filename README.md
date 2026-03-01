@@ -1,0 +1,2 @@
+# EDUCORE
+plataforma integral educativa
