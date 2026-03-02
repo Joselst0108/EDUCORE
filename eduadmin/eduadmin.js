@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", async () => {
+8document.addEventListener("DOMContentLoaded", async () => {
   // Bloqueo por plan
   checkPlanAccess("eduadmin");
 
@@ -93,11 +93,16 @@ async function loadAnios(colegioId) {
 }
 
 async function activarAnio(id) {
+  const profile = await getUserProfile();
+  const colegioId = profile.colegio_id;
+
+  // Desactivar solo los años del mismo colegio
   await window.sb
     .from("anios_academicos")
     .update({ activo: false })
-    .neq("id", id);
+    .eq("colegio_id", colegioId);
 
+  // Activar el seleccionado
   await window.sb
     .from("anios_academicos")
     .update({ activo: true })
