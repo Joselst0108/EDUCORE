@@ -1,4 +1,4 @@
-8document.addEventListener("DOMContentLoaded", async () => {
+67898document.addEventListener("DOMContentLoaded", async () => {
   // Bloqueo por plan
   checkPlanAccess("eduadmin");
 
@@ -23,7 +23,8 @@ async function loadColegio(colegioId) {
     .eq("id", colegioId)
     .single();
 
-  if (error) return showMsg("msgColegio", error.message);
+  if (error) return showMsg("msgColegio", "❌ " + error.message);
+if (!data) return showMsg("msgColegio", "❌ No se pudo leer el colegio (data=null)");
 
   document.getElementById("nombreColegio").value = data.nombre;
   document.getElementById("planColegio").value = data.plan;
