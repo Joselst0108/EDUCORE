@@ -61,14 +61,19 @@ if (window.location.pathname.includes("anios.html")) {
       const anio = parseInt(document.getElementById("anioInput").value);
       if (!anio) return;
 
-      await window.sb.from("anios_academicos").insert({
-        colegio_id: colegioId,
-        anio: anio,
-        nombre: "Año " + anio,
-        activo: false
-      });
+      const { error } = await window.sb.from("anios_academicos").insert({
+  colegio_id: colegioId,
+  anio: anio,
+  nombre: "Año " + anio,
+  activo: false
+});
 
-      loadAnios(colegioId);
+if (error) {
+  alert("No se pudo crear año: " + error.message);
+  return;
+}
+
+loadAnios(colegioId);
     });
   });
 }
