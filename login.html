@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Educore | Login</title>
+
+  <link rel="stylesheet" href="/assets/css/variables.css">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/assets/js/env.js"></script>
+  <script src="/assets/js/supabaseClient.js"></script>
+  <script src="/assets/js/auth.js"></script>
+</head>
+
+<body class="auth-body">
+
+  <div class="auth-card">
+    <h1>EDUCORE</h1>
+    <p>Sistema SaaS Educativo</p>
+
+    <input type="text" id="dni" placeholder="DNI (8 dígitos)" maxlength="8">
+    <input type="password" id="password" placeholder="Contraseña">
+    <button id="btnLogin">Ingresar</button>
+
+    <div id="authMessage" class="auth-message"></div>
+  </div>
+
+  <script>
+    document.getElementById("btnLogin").addEventListener("click", async () => {
+      const dni = document.getElementById("dni").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (!/^\d{8}$/.test(dni)) {
+        return showMessage("DNI inválido");
+      }
+
+      const email = dni + "@educore.local";
+
+      const { error } = await window.sb.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) return showMessage(error.message);
+
+      window.location.href = "/dashboard.html";
+    });
+
+    function showMessage(msg) {
+      document.getElementById("authMessage").innerText = msg;
+    }
+  </script>
+
+</body>
+</html>
