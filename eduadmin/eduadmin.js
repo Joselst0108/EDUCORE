@@ -45,3 +45,63 @@ async function saveColegio(colegioId) {
 function showMsg(id, msg) {
   document.getElementById(id).innerText = msg;
 }
+// ===== AÑOS ACADÉMICOS =====
+
+if (window.location.pathname.includes("anios.html")) {
+  document.addEventListener("DOMContentLoaded", async () => {
+    const profile = await getUserProfile();
+    if (!profile) return;
+
+    const colegioId = profile.colegio_id;
+
+    loadAnios(colegioId);
+
+    document.getElementById("btnCrearAnio").addEventListener("click", async () => {
+      const anio = parseInt(document.getElementById("anioInput").value);
+      if (!anio) return;
+
+      await window.sb.from("anios_academicos").insert({
+        colegio_id: colegioId,
+        anio: anio,
+        nombre: "Año " + anio,
+        activo: false
+      });
+
+      loadAnios(colegioId);
+    });
+  });
+}
+
+async function loadAnios(colegioId) {
+  const { data } = await window.sb
+    .from("anios_academicos")
+    .select("*")
+    .eq("colegio_id", colegioId)
+    .order("anio", { ascending: false });
+
+  const container = document.getElementById("listaAnios");
+  container.innerHTML = "";
+
+  data.forEach(a => {
+    const div = document.createElement("div");
+    div.innerHTML = `
+      <p>${a.anio} ${a.activo ? "(Activo)" : ""}</p>
+      <button onclick="activarAnio('${a.id}')">Activar</button>
+    `;
+    container.appendChild(div);
+  });
+}
+
+async function activarAnio(id) {
+  await window.sb
+    .from("anios_academicos")
+    .update({ activo: false })
+    .neq("id", id);
+
+  await window.sb
+    .from("anios_academicos")
+    .update({ activo: true })
+    .eq("id", id);
+
+  location.reload();
+}
